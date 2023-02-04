@@ -60,6 +60,15 @@ public class EnemyAI : MonoBehaviour
     public Sprite NormalSprite;
     public Sprite ShootingSprite;
     public GameObject GM;
+
+    public Sprite Stage_2_Sprite;
+    public Sprite Stage_3_Sprite;
+    public float Stage_2_Health;
+    public float Stage_3_Health;
+
+    SpriteRenderer playerSprite;
+    Color defaultColor = new Color(1, 1, 1, 1);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,6 +76,7 @@ public class EnemyAI : MonoBehaviour
         PlayerObject = GameObject.Find("Bullet_Player");
         ObjectHolder = GameObject.Find("Objects");
         RB.velocity = Velocity;
+        playerSprite = GetComponent<SpriteRenderer>();
         //Debug.Log((int)EnemyShootMode);
     }
 
@@ -249,4 +259,35 @@ public class EnemyAI : MonoBehaviour
 
     }
 
+    public void Blink()
+    {
+        StartCoroutine(Change_Color());
+    }
+
+    public IEnumerator Change_Color()
+    {
+        playerSprite.color = new Color(1, 0, 0, 1);
+
+        yield return new WaitForSeconds(0.1f);
+
+        playerSprite.color = defaultColor;
+    }
+
+    public void Check_Stage()
+    {
+        if (Health < Stage_3_Health)
+        {
+            if (Stage_3_Sprite)
+            {
+                playerSprite.sprite = Stage_3_Sprite;
+            }
+        }
+        else if (Health < Stage_2_Health)
+        {
+            if (Stage_2_Sprite)
+            {
+                playerSprite.sprite = Stage_2_Sprite;
+            }
+        }
+    }
 }

@@ -28,14 +28,24 @@ public class Player : MonoBehaviour {
 	//Audio
 	public AudioSource asource; 			//The players AudioSource that sounds will be played through
 	public AudioClip shootSound;			//The audio clip that will be played when the player fires a bullet
-	public AudioClip dryFireSound;			//The audio clip that will be played when the player has no more ammo but continues to click
-	
+	public AudioClip dryFireSound;          //The audio clip that will be played when the player has no more ammo but continues to click
+
+	[Tooltip("bullet to instantiate on shoot")]
+	public GameObject BulletPrefab;
+	public GameObject Shoot_Start_Location;
+
+	GameObject SpawnedBullet;
+	GameObject ObjectHolder;
+	GameObject Bac_Image;
+	SpriteRenderer Bac_Image_Sprite_Renderer;
+	Vector3 Original_Scale;
+
 	void Start ()
 	{
 		rig = transform.GetComponent<Rigidbody2D>();
 		startAmmo = 100;
 		ammo = startAmmo;
-		moveSpeed = 5000;
+		moveSpeed = 10000;
 		shootDist = 100;
 		
 		curHp = 100;
@@ -50,12 +60,22 @@ public class Player : MonoBehaviour {
 		laser.GetComponent<LineRenderer>().sortingLayerName = "Player";
 		
 		asource.volume = PlayerPrefs.GetFloat("Volume");
+
+		ObjectHolder = GameObject.Find("Objects");
+
+
+		if (transform.GetChild(3))
+        {
+			Bac_Image = transform.GetChild(3).gameObject;
+			Bac_Image_Sprite_Renderer = Bac_Image.GetComponent<SpriteRenderer>();
+			Original_Scale = Bac_Image_Sprite_Renderer.transform.localScale;
+		}
 	}
 	
 	void Update ()
 	{
 		Move();
-		CameraFollow();
+		//CameraFollow();
 		
 		if(Input.GetMouseButtonDown(0) && !UI.isPaused){
 			if(ammo > 0){
@@ -100,6 +120,7 @@ public class Player : MonoBehaviour {
 	void Shoot ()
 	{
 		ammo --;
+		Update_Image_Scale();
 		
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, shootDist, mask.value);
 		
@@ -113,11 +134,20 @@ public class Player : MonoBehaviour {
 		mf.transform.parent = transform;
 
 		GameObject.Destroy(mf, 0.1f);
+
+
+		SpawnedBullet = Instantiate(BulletPrefab, Shoot_Start_Location.transform.position, Quaternion.identity);
+		Vector3 objectPos = new Vector3(0, 0, 0);
+		Vector3 dir = new Vector3(0, 0, 0);
+		objectPos = Camera.main.WorldToScreenPoint(transform.position);
+		dir = Input.mousePosition - objectPos;
+		SpawnedBullet.GetComponent<Bullet>().RBVelocity = new Vector2(dir.x, dir.y).normalized * 100;
 	}
 	
 	public void Damaged (int dmg)
 	{
 		curHp -= dmg;
+		Blink();
 	}
 	
 	void CameraFollow ()
@@ -135,5 +165,27 @@ public class Player : MonoBehaviour {
 		}
 		
 		Application.LoadLevel(0);
-	}	
+	}
+
+	public void Blink()
+	{
+		StartCoroutine(Change_Color());
+	}
+
+	public IEnumerator Change_Color()
+	{
+		if (Bac_Image_Sprite_Renderer)
+		{
+			Bac_Image_Sprite_Renderer.color = new Color(1, 0, 0, 1);
+
+			yield return new WaitForSeconds(0.1f);
+
+			Bac_Image_Sprite_Renderer.color = new Color(1, 1, 1, 1);
+		}
+	}
+
+	public void Update_Image_Scale()
+    {
+		Bac_Image_Sprite_Renderer.transform.localScale = Original_Scale * Mathf.Clamp(((float)ammo / startAmmo), 0.5f, 1.5f);
+	}
 }
