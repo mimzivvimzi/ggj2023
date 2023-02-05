@@ -67,6 +67,7 @@ public class EnemyAI : MonoBehaviour
     public float Stage_3_Health;
 
     SpriteRenderer playerSprite;
+    BoxCollider2D toothCollider;
     Color defaultColor = new Color(1, 1, 1, 1);
 
     // Start is called before the first frame update
@@ -77,6 +78,7 @@ public class EnemyAI : MonoBehaviour
         ObjectHolder = GameObject.Find("Objects");
         RB.velocity = Velocity;
         playerSprite = GetComponent<SpriteRenderer>();
+        toothCollider = GetComponent<BoxCollider2D>();
         //Debug.Log((int)EnemyShootMode);
     }
 
@@ -234,7 +236,7 @@ public class EnemyAI : MonoBehaviour
         {
             if(collision.gameObject.tag == "KillEnemy")
             {
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
             }
         }
         //damage the player when colliding with it
@@ -259,6 +261,11 @@ public class EnemyAI : MonoBehaviour
 
     }
 
+    public void Set_Collision_Dead()
+    {
+        toothCollider.isTrigger = true;
+    }
+
     public void Blink()
     {
         StartCoroutine(Change_Color());
@@ -280,6 +287,7 @@ public class EnemyAI : MonoBehaviour
             if (Stage_3_Sprite)
             {
                 playerSprite.sprite = Stage_3_Sprite;
+                Set_Collision_Dead();
             }
         }
         else if (Health < Stage_2_Health)

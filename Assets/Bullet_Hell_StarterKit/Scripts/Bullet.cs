@@ -45,6 +45,7 @@ public class Bullet : MonoBehaviour
                 Destroy(this.gameObject);
             }
             //boss uses this to animate while he is shooting beam
+            /*
             if (IsBeam == true)
             {
                 this.gameObject.SetActive(false);
@@ -54,6 +55,7 @@ public class Bullet : MonoBehaviour
                     this.gameObject.GetComponentInParent<EnemyAI>().animator.enabled = false;
                 }
             }
+            */
         }
     }
 
@@ -73,7 +75,7 @@ public class Bullet : MonoBehaviour
                 if (collision.gameObject.GetComponent<EnemyAI>().Health < 1)
                 {
                     //remove enemy
-                    Destroy(collision.gameObject);
+                    //Destroy(collision.gameObject);
                 }
             }
 
@@ -121,7 +123,6 @@ public class Bullet : MonoBehaviour
         //enemybullet
         if (this.gameObject.layer == 11)
         {
-            Debug.Log("Bullet" + collision.gameObject.layer);
             //check if it hits Bullet_Player and Bullet_Player is not invincible , Bullet_Playeris layer 8
             //if (collision.gameObject.layer == 8 && collision.gameObject.GetComponent<BulletPlayer>().InvincibleFrames < 1)
             if (collision.gameObject.GetComponent<Player>())
@@ -141,7 +142,7 @@ public class Bullet : MonoBehaviour
                     Cursor.visible = true;
                 }*/
                 //make Bullet_Player invincible for short time
-                collision.gameObject.GetComponent<Bullet_Player>().InvincibleFrames = collision.gameObject.GetComponent<Bullet_Player>().InvincibleFramesOnHit;
+                //collision.gameObject.GetComponent<Bullet_Player>().InvincibleFrames = collision.gameObject.GetComponent<Bullet_Player>().InvincibleFramesOnHit;
                 //Bullet_Player becomes layer 31, layer 31 ignores collisions with enemy projectiles
                 collision.gameObject.layer = 31;
                 //remove bullet from game
@@ -155,6 +156,14 @@ public class Bullet : MonoBehaviour
                 //{
                 //    //this.gameObject.SetActive(false);
                 //}
+            }
+            else if (collision.gameObject.GetComponent<Bullet>())
+            {
+                //Playerbullet (Bac)
+                if (collision.gameObject.layer == 10)
+                {
+                    Destroy(collision.gameObject);
+                }
             }
         }
         //destroy bullet on boundary
