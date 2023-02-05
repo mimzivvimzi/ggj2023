@@ -32,10 +32,10 @@ public class Bullet : MonoBehaviour
     private void FixedUpdate()
     {
         //Bullet_Playersbullet always moves straight up
-        if(PlayerBullet==true)
-        {
+        //if(PlayerBullet==true)
+        //{
             RB.velocity = RBVelocity;
-        }
+        //}
         Duration--;
         //remove bullet if its duration expires
         if(Duration==0)
