@@ -40,6 +40,9 @@ public class Player : MonoBehaviour {
 	SpriteRenderer Bac_Image_Sprite_Renderer;
 	Vector3 Original_Scale;
 
+	public Sprite Idle_Sprite;
+	public Sprite Get_Hit_Sprite;
+
 	void Start ()
 	{
 		rig = transform.GetComponent<Rigidbody2D>();
@@ -176,11 +179,15 @@ public class Player : MonoBehaviour {
 	{
 		if (Bac_Image_Sprite_Renderer)
 		{
-			Bac_Image_Sprite_Renderer.color = new Color(1, 0, 0, 1);
+			//Bac_Image_Sprite_Renderer.color = new Color(1, 0, 0, 1);
+
+			Bac_Image_Sprite_Renderer.sprite = Get_Hit_Sprite;
 
 			yield return new WaitForSeconds(0.1f);
 
-			Bac_Image_Sprite_Renderer.color = new Color(1, 1, 1, 1);
+			//Bac_Image_Sprite_Renderer.color = new Color(1, 1, 1, 1);
+
+			Bac_Image_Sprite_Renderer.sprite = Idle_Sprite;
 		}
 	}
 
