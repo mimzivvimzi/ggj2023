@@ -6,16 +6,23 @@ public class AudioManager : MonoBehaviour
 {
     // Start is called before the first frame update
     public AudioSource audioSource;
-    public float delay=4;
+    public AudioClip StartScreen;
+    public AudioClip LevelMusic;
+    public AudioClip Victory;
+    public AudioClip GameOver;
+
     void Start()
     {
-        // Plays an Audio Clip after 4 seconds
-        audioSource.PlayDelayed(delay);
+        audioSource.clip = StartScreen;
+        audioSource.Play();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButton(1)) {
+            audioSource.Stop();
+            audioSource.clip = Victory;
+            audioSource.Play();
+        }
     }
 }
